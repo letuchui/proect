@@ -1,0 +1,37 @@
+@startuml
+title Use Case диаграмма системы учёта материалов
+left to right direction
+skinparam packageStyle rectangle
+skinparam shadowing false
+skinparam usecase {
+  BackgroundColor #F8FBFF
+  BorderColor #2F5597
+  ArrowColor #718096
+}
+
+actor "Кладовщик" as Storekeeper
+actor "Руководитель /\nбухгалтер" as Manager
+
+rectangle "Информационная система" {
+  usecase "Авторизация" as Login
+  usecase "Управление\nматериалами" as Materials
+  usecase "Регистрация\nприхода" as Incoming
+  usecase "Регистрация\nрасхода" as Outgoing
+  usecase "Просмотр\nостатков" as Stock
+  usecase "Формирование\nотчёта" as Report
+  usecase "История\nопераций" as History
+}
+
+Storekeeper --> Login
+Storekeeper --> Materials
+Storekeeper --> Incoming
+Storekeeper --> Outgoing
+Storekeeper --> Stock
+Storekeeper --> History
+
+Manager --> Login
+Manager --> Stock
+Manager --> Report
+Manager --> History
+@enduml
+

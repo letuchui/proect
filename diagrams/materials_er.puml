@@ -1,0 +1,68 @@
+@startuml
+title ER-диаграмма базы данных учёта материалов
+hide methods
+hide stereotypes
+skinparam linetype ortho
+skinparam entity {
+  BackgroundColor #F8FBFF
+  BorderColor #2F5597
+}
+
+entity materials {
+  * material_id : INTEGER <<PK>>
+  --
+  name : TEXT <<UNIQUE>>
+  unit : TEXT
+  min_stock : REAL
+}
+
+entity suppliers {
+  * supplier_id : INTEGER <<PK>>
+  --
+  name : TEXT <<UNIQUE>>
+  phone : TEXT
+}
+
+entity departments {
+  * department_id : INTEGER <<PK>>
+  --
+  name : TEXT <<UNIQUE>>
+}
+
+entity users {
+  * user_id : INTEGER <<PK>>
+  --
+  full_name : TEXT
+  role : TEXT
+}
+
+entity operations {
+  * operation_id : INTEGER <<PK>>
+  --
+  operation_type : TEXT
+  operation_date : TEXT
+  supplier_id : INTEGER <<FK>>
+  department_id : INTEGER <<FK>>
+  user_id : INTEGER <<FK>>
+  comment : TEXT
+}
+
+entity operation_items {
+  * item_id : INTEGER <<PK>>
+  --
+  operation_id : INTEGER <<FK>>
+  material_id : INTEGER <<FK>>
+  quantity : REAL
+}
+
+suppliers ||--o{ operations : "поставляет"
+departments ||--o{ operations : "получает"
+users ||--o{ operations : "оформляет"
+operations ||--|{ operation_items : "содержит"
+materials ||--o{ operation_items : "участвует"
+
+note right of operations
+  IN — приход от поставщика
+  OUT — расход в подразделение
+end note
+@enduml

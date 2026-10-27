@@ -1,0 +1,47 @@
+@startuml
+title Use Case диаграмма системы управления складом
+
+left to right direction
+skinparam actorStyle stickman
+skinparam packageStyle rectangle
+skinparam linetype ortho
+skinparam shadowing false
+
+actor "Кладовщик" as Storekeeper
+actor "Администратор" as Administrator
+actor "Бухгалтер" as Accountant
+
+rectangle "Система управления складом" {
+    usecase "Авторизация" as Login
+    usecase "Управление материалами" as Materials
+    usecase "Регистрация прихода" as Receipt
+    usecase "Регистрация расхода" as Expense
+    usecase "Добавить товар" as AddProduct
+    usecase "Убрать товар" as RemoveProduct
+    usecase "Добавление спецкода\nбухгалтерам" as AddCode
+    usecase "Регистрация новых\nпользователей" as RegisterUsers
+    usecase "История операций" as History
+    usecase "Просмотр остатков\nтовара" as Stock
+    usecase "Формирование отчёта" as Report
+}
+
+Storekeeper --> Login
+Storekeeper --> Materials
+Storekeeper --> History
+Storekeeper --> Stock
+
+Administrator --> Login
+Administrator --> AddCode
+Administrator --> RegisterUsers
+
+Accountant --> Login
+Accountant --> History
+Accountant --> Stock
+Accountant --> Report
+
+Materials ..> Receipt : <<include>>
+Materials ..> Expense : <<include>>
+Receipt ..> AddProduct : <<include>>
+Expense ..> RemoveProduct : <<include>>
+
+@enduml
