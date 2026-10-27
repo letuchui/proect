@@ -1,4 +1,4 @@
-"""Слой доступа к SQLite-базе проекта учёта материалов."""
+"""Подключение к SQLite и совместимые функции инициализации проекта."""
 
 from __future__ import annotations
 
@@ -15,9 +15,13 @@ SEED_PATH = PROJECT_ROOT / "database" / "seed.sql"
 
 
 def get_connection(db_path: str | Path = DEFAULT_DB_PATH) -> sqlite3.Connection:
-    """Открывает соединение и включает контроль внешних ключей."""
-    path = Path(db_path)
-    path.parent.mkdir(parents=True, exist_ok=True)
+    """Открывает SQLite-соединение с включёнными внешними ключами."""
+    if str(db_path) == ":memory:":
+        path = ":memory:"
+    else:
+        path = Path(db_path)
+        path.parent.mkdir(parents=True, exist_ok=True)
+
     connection = sqlite3.connect(path)
     connection.row_factory = sqlite3.Row
     connection.execute("PRAGMA foreign_keys = ON")
@@ -29,7 +33,7 @@ def initialize_database(
     schema_path: str | Path = SCHEMA_PATH,
     seed_path: str | Path | None = SEED_PATH,
 ) -> None:
-    """Пересоздаёт структуру и загружает тестовые данные из seed.sql."""
+    """Создаёт структуру и загружает демонстрационные записи."""
     schema = Path(schema_path).read_text(encoding="utf-8")
     with closing(get_connection(db_path)) as connection:
         connection.executescript(schema)
@@ -38,6 +42,41 @@ def initialize_database(
             connection.executescript(seed)
 
 
+def _has_expected_schema(db_path: str | Path) -> bool:
+    """Проверяет, что база создана актуальной схемой ЛР4."""
+    try:
+        with closing(get_connection(db_path)) as connection:
+            tables = {
+                row[0]
+                for row in connection.execute(
+                    "SELECT name FROM sqlite_master WHERE type = 'table'"
+                )
+            }
+            required = {
+                "materials",
+                "suppliers",
+                "departments",
+                "users",
+                "operations",
+                "operation_items",
+            }
+            if not required.issubset(tables):
+                return False
+            user_columns = {
+                row[1] for row in connection.execute("PRAGMA table_info(users)")
+            }
+            return {"login", "password_hash", "operation"}.issubset(user_columns)
+    except sqlite3.DatabaseError:
+        return False
+
+
+def ensure_database(db_path: str | Path = DEFAULT_DB_PATH) -> None:
+    """Создаёт БД только при первом запуске или после устаревшей схемы."""
+    if not _has_expected_schema(db_path):
+        initialize_database(db_path)
+
+
+# Обратная совместимость с функциями, использовавшимися в ЛР3.
 def add_material(
     name: str,
     unit: str,
@@ -45,14 +84,10 @@ def add_material(
     *,
     db_path: str | Path = DEFAULT_DB_PATH,
 ) -> int:
-    """Добавляет материал в справочник и возвращает его идентификатор."""
-    with closing(get_connection(db_path)) as connection:
-        with connection:
-            cursor = connection.execute(
-                "INSERT INTO materials (name, unit, min_stock) VALUES (?, ?, ?)",
-                (name, unit, min_stock),
-            )
-            return int(cursor.lastrowid)
+    from .models import Material
+    from .repositories.material_repository import MaterialRepository
+
+    return MaterialRepository(db_path).create(Material(None, name, unit, min_stock))
 
 
 def add_supplier(
@@ -61,14 +96,10 @@ def add_supplier(
     *,
     db_path: str | Path = DEFAULT_DB_PATH,
 ) -> int:
-    """Добавляет поставщика и возвращает его идентификатор."""
-    with closing(get_connection(db_path)) as connection:
-        with connection:
-            cursor = connection.execute(
-                "INSERT INTO suppliers (name, phone) VALUES (?, ?)",
-                (name, phone),
-            )
-            return int(cursor.lastrowid)
+    from .models import Supplier
+    from .repositories.supplier_repository import SupplierRepository
+
+    return SupplierRepository(db_path).create(Supplier(None, name, phone))
 
 
 def add_department(
@@ -76,93 +107,49 @@ def add_department(
     *,
     db_path: str | Path = DEFAULT_DB_PATH,
 ) -> int:
-    """Добавляет подразделение-получателя."""
-    with closing(get_connection(db_path)) as connection:
-        with connection:
-            cursor = connection.execute(
-                "INSERT INTO departments (name) VALUES (?)",
-                (name,),
-            )
-            return int(cursor.lastrowid)
+    from .models import Department
+    from .repositories.department_repository import DepartmentRepository
+
+    return DepartmentRepository(db_path).create(Department(None, name))
 
 
 def add_user(
     full_name: str,
     role: str,
     *,
+    login: str = "",
+    password_hash: str = "",
+    operation: bool = True,
     db_path: str | Path = DEFAULT_DB_PATH,
 ) -> int:
-    """Добавляет пользователя с ролью, заданной ограничениями БД."""
-    with closing(get_connection(db_path)) as connection:
-        with connection:
-            cursor = connection.execute(
-                "INSERT INTO users (full_name, role) VALUES (?, ?)",
-                (full_name, role),
-            )
-            return int(cursor.lastrowid)
+    from .models import User
+    from .repositories.user_repository import UserRepository
+
+    return UserRepository(db_path).create(
+        User(None, full_name, role, login, password_hash, operation)
+    )
 
 
-def list_materials(db_path: str | Path = DEFAULT_DB_PATH) -> list[sqlite3.Row]:
-    """Возвращает справочник материалов."""
-    with closing(get_connection(db_path)) as connection:
-        return connection.execute(
-            """
-            SELECT material_id, name, unit, min_stock
-            FROM materials
-            ORDER BY material_id
-            """
-        ).fetchall()
+def list_materials(db_path: str | Path = DEFAULT_DB_PATH):
+    from .repositories.material_repository import MaterialRepository
+
+    return MaterialRepository(db_path).get_all_rows()
 
 
-def list_balances(db_path: str | Path = DEFAULT_DB_PATH) -> list[sqlite3.Row]:
-    """Рассчитывает остатки как приход минус расход."""
-    with closing(get_connection(db_path)) as connection:
-        return connection.execute(
-            """
-            SELECT
-                m.material_id,
-                m.name,
-                m.unit,
-                m.min_stock,
-                COALESCE(SUM(
-                    CASE
-                        WHEN o.operation_type = 'IN' THEN oi.quantity
-                        WHEN o.operation_type = 'OUT' THEN -oi.quantity
-                    END
-                ), 0) AS balance
-            FROM materials AS m
-            LEFT JOIN operation_items AS oi ON oi.material_id = m.material_id
-            LEFT JOIN operations AS o ON o.operation_id = oi.operation_id
-            GROUP BY m.material_id, m.name, m.unit, m.min_stock
-            ORDER BY m.material_id
-            """
-        ).fetchall()
+def list_balances(db_path: str | Path = DEFAULT_DB_PATH):
+    from .repositories.material_repository import MaterialRepository
+
+    return MaterialRepository(db_path).get_balance_rows()
 
 
-def list_low_stock(db_path: str | Path = DEFAULT_DB_PATH) -> list[sqlite3.Row]:
-    """Возвращает материалы, остаток которых ниже минимального запаса."""
+def list_low_stock(db_path: str | Path = DEFAULT_DB_PATH):
     return [row for row in list_balances(db_path) if row["balance"] < row["min_stock"]]
 
 
-def list_operations(db_path: str | Path = DEFAULT_DB_PATH) -> list[sqlite3.Row]:
-    """Возвращает историю операций с ответственным лицом."""
-    with closing(get_connection(db_path)) as connection:
-        return connection.execute(
-            """
-            SELECT
-                o.operation_id,
-                o.operation_type,
-                o.operation_date,
-                COALESCE(s.name, d.name) AS counterparty,
-                u.full_name,
-                o.comment
-            FROM operations AS o
-            LEFT JOIN suppliers AS s ON s.supplier_id = o.supplier_id
-            LEFT JOIN departments AS d ON d.department_id = o.department_id
-            JOIN users AS u ON u.user_id = o.user_id
-            ORDER BY o.operation_date, o.operation_id
-            """
-        ).fetchall()
+def list_operations(db_path: str | Path = DEFAULT_DB_PATH):
+    from .repositories.operation_repository import OperationRepository
+
+    return OperationRepository(db_path).get_history_rows()
 
 
 def add_operation(
@@ -176,27 +163,16 @@ def add_operation(
     comment: str | None = None,
     db_path: str | Path = DEFAULT_DB_PATH,
 ) -> int:
-    """Добавляет операцию и её строки в одной транзакции."""
-    item_values = list(items)
-    if not item_values:
-        raise ValueError("Операция должна содержать хотя бы один материал")
+    from .models import Operation
+    from .repositories.operation_repository import OperationRepository
 
-    with closing(get_connection(db_path)) as connection:
-        with connection:
-            cursor = connection.execute(
-                """
-                INSERT INTO operations
-                    (operation_type, operation_date, supplier_id, department_id, user_id, comment)
-                VALUES (?, ?, ?, ?, ?, ?)
-                """,
-                (operation_type, operation_date, supplier_id, department_id, user_id, comment),
-            )
-            operation_id = int(cursor.lastrowid)
-            connection.executemany(
-                """
-                INSERT INTO operation_items (operation_id, material_id, quantity)
-                VALUES (?, ?, ?)
-                """,
-                [(operation_id, material_id, quantity) for material_id, quantity in item_values],
-            )
-            return operation_id
+    operation = Operation(
+        None,
+        operation_type,
+        operation_date,
+        supplier_id,
+        department_id,
+        user_id,
+        comment,
+    )
+    return OperationRepository(db_path).create_with_items(operation, list(items))

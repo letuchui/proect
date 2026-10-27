@@ -13,9 +13,10 @@ INSERT INTO departments (name) VALUES
     ('Ремонтный цех'),
     ('Производственный участок');
 
-INSERT INTO users (full_name, role) VALUES
-    ('Иван Иванович Иванов', 'Кладовщик'),
-    ('Пупкин Василий Васильевич', 'Бухгалтер');
+-- Демонстрационные пароли: clerk123 и accountant123.
+INSERT INTO users (full_name, role, login, password_hash, operation) VALUES
+    ('Иван Иванович Иванов', 'Кладовщик', 'ivanov', '00112233445566778899aabbccddeeff$251a3098a8f8637bc20404af381c0ae6c796ad2da69c01ffb3476abc96315e24', 1),
+    ('Пупкин Василий Васильевич', 'Бухгалтер', 'pupkin', 'ffeeddccbbaa99887766554433221100$9162d3f8e8b4e809078a9e923144a644cb01ab61918127773e76ba6be8afa49a', 1);
 
 INSERT INTO operations
     (operation_type, operation_date, supplier_id, department_id, user_id, comment)

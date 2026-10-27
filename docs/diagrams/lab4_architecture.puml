@@ -1,0 +1,24 @@
+@startuml
+title Слои приложения учёта материалов
+
+actor Пользователь
+rectangle "UI слой\nmain.py и ui/cli.py" as UI
+rectangle "Сервисный слой\nservices/" as Services
+rectangle "Репозитории\nrepositories/" as Repositories
+rectangle "Модели\nmodels/" as Models
+database "SQLite\ndata/materials.db" as DB
+
+Пользователь --> UI : ввод команд
+UI --> Services : вызов операций
+Services --> Repositories : проверки и CRUD
+Repositories --> Models : преобразование строк
+Repositories --> DB : параметризованный SQL
+Models --> UI : готовые объекты
+
+note right of Services
+  Авторизация
+  Проверка ролей
+  Приход и расход
+  Контроль остатков
+end note
+@enduml

@@ -9,10 +9,10 @@ class MainTestCase(unittest.TestCase):
     def test_main_prints_project_title(self):
         output = StringIO()
         with redirect_stdout(output):
-            result = main()
+            result = main(interactive=False)
 
         self.assertEqual(result.splitlines()[0], PROJECT_TITLE)
-        self.assertIn("успешно", output.getvalue())
+        self.assertIn("готова", output.getvalue())
 
 
 if __name__ == "__main__":

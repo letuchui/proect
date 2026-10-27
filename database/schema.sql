@@ -30,7 +30,10 @@ CREATE TABLE departments (
 CREATE TABLE users (
     user_id INTEGER PRIMARY KEY AUTOINCREMENT,
     full_name TEXT NOT NULL,
-    role TEXT NOT NULL CHECK (role IN ('Кладовщик', 'Руководитель', 'Бухгалтер'))
+    role TEXT NOT NULL CHECK (role IN ('Кладовщик', 'Руководитель', 'Бухгалтер')),
+    login TEXT NOT NULL UNIQUE,
+    password_hash TEXT NOT NULL,
+    operation INTEGER NOT NULL DEFAULT 1 CHECK (operation IN (0, 1))
 );
 
 CREATE TABLE operations (
