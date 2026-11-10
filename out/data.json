@@ -1,0 +1,186 @@
+[
+  {
+    "operation_id": 1,
+    "operation_type": "IN",
+    "operation_date": "2026-10-01",
+    "comment": "Поставка материалов по накладной № 15",
+    "supplier": {
+      "supplier_id": 1,
+      "name": "ООО \"стройкомп\"",
+      "phone": "+7 900 111-22-33"
+    },
+    "department": null,
+    "user": {
+      "user_id": 1,
+      "full_name": "Иван Иванович Иванов",
+      "role": "Кладовщик"
+    },
+    "items": [
+      {
+        "item_id": 1,
+        "quantity": 100.0,
+        "material": {
+          "material_id": 1,
+          "name": "цемент",
+          "unit": "кг",
+          "min_stock": 50.0
+        }
+      },
+      {
+        "item_id": 2,
+        "quantity": 120.0,
+        "material": {
+          "material_id": 2,
+          "name": "кабель",
+          "unit": "м",
+          "min_stock": 30.0
+        }
+      },
+      {
+        "item_id": 3,
+        "quantity": 300.0,
+        "material": {
+          "material_id": 3,
+          "name": "перчатки",
+          "unit": "шт",
+          "min_stock": 100.0
+        }
+      }
+    ]
+  },
+  {
+    "operation_id": 2,
+    "operation_type": "IN",
+    "operation_date": "2026-10-03",
+    "comment": "Дополнительная поставка кабеля и перчаток",
+    "supplier": {
+      "supplier_id": 2,
+      "name": "ООО \"стройкомп2.0\"",
+      "phone": "+7 900 444-55-66"
+    },
+    "department": null,
+    "user": {
+      "user_id": 1,
+      "full_name": "Иван Иванович Иванов",
+      "role": "Кладовщик"
+    },
+    "items": [
+      {
+        "item_id": 4,
+        "quantity": 50.0,
+        "material": {
+          "material_id": 2,
+          "name": "кабель",
+          "unit": "м",
+          "min_stock": 30.0
+        }
+      },
+      {
+        "item_id": 5,
+        "quantity": 250.0,
+        "material": {
+          "material_id": 3,
+          "name": "перчатки",
+          "unit": "шт",
+          "min_stock": 100.0
+        }
+      }
+    ]
+  },
+  {
+    "operation_id": 3,
+    "operation_type": "OUT",
+    "operation_date": "2026-10-05",
+    "comment": "Выдача материалов ремонтному цеху",
+    "supplier": null,
+    "department": {
+      "department_id": 1,
+      "name": "Ремонтный цех"
+    },
+    "user": {
+      "user_id": 1,
+      "full_name": "Иван Иванович Иванов",
+      "role": "Кладовщик"
+    },
+    "items": [
+      {
+        "item_id": 6,
+        "quantity": 25.0,
+        "material": {
+          "material_id": 1,
+          "name": "цемент",
+          "unit": "кг",
+          "min_stock": 50.0
+        }
+      },
+      {
+        "item_id": 7,
+        "quantity": 40.0,
+        "material": {
+          "material_id": 2,
+          "name": "кабель",
+          "unit": "м",
+          "min_stock": 30.0
+        }
+      },
+      {
+        "item_id": 8,
+        "quantity": 100.0,
+        "material": {
+          "material_id": 3,
+          "name": "перчатки",
+          "unit": "шт",
+          "min_stock": 100.0
+        }
+      }
+    ]
+  },
+  {
+    "operation_id": 4,
+    "operation_type": "OUT",
+    "operation_date": "2026-10-06",
+    "comment": "Выдача материалов производственному участку",
+    "supplier": null,
+    "department": {
+      "department_id": 2,
+      "name": "Производственный участок"
+    },
+    "user": {
+      "user_id": 1,
+      "full_name": "Иван Иванович Иванов",
+      "role": "Кладовщик"
+    },
+    "items": [
+      {
+        "item_id": 9,
+        "quantity": 10.0,
+        "material": {
+          "material_id": 1,
+          "name": "цемент",
+          "unit": "кг",
+          "min_stock": 50.0
+        }
+      },
+      {
+        "item_id": 10,
+        "quantity": 20.0,
+        "material": {
+          "material_id": 2,
+          "name": "кабель",
+          "unit": "м",
+          "min_stock": 30.0
+        }
+      },
+      {
+        "item_id": 11,
+        "quantity": 50.0,
+        "material": {
+          "material_id": 3,
+          "name": "перчатки",
+          "unit": "шт",
+          "min_stock": 100.0
+        }
+      }
+    ]
+  }
+]

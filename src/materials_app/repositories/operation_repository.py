@@ -7,7 +7,7 @@ from contextlib import closing
 from pathlib import Path
 from typing import Iterable
 
-from ..database import DEFAULT_DB_PATH, get_connection
+from ..database import DEFAULT_DB_PATH, PROJECT_ROOT, get_connection
 from ..models import Operation
 
 
@@ -126,6 +126,15 @@ class OperationRepository:
                 ORDER BY o.operation_date, o.operation_id
                 """
             ).fetchall()
+
+    def get_export_rows(self) -> tuple[list[dict], list[str]]:
+        """Возвращает строки JOIN и имена полей, в том числе для пустой БД."""
+        query = (PROJECT_ROOT / "database" / "export_query.sql").read_text(encoding="utf-8")
+        with closing(get_connection(self.db_path)) as connection:
+            cursor = connection.execute(query)
+            columns = [description[0] for description in cursor.description]
+            rows = [dict(row) for row in cursor.fetchall()]
+        return rows, columns
 
     def update(self, operation: Operation) -> bool:
         if operation.operation_id is None:

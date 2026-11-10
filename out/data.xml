@@ -1,0 +1,187 @@
+<?xml version='1.0' encoding='utf-8'?>
+<data type="array">
+  <item type="object">
+    <operation_id type="integer">1</operation_id>
+    <operation_type type="string">IN</operation_type>
+    <operation_date type="string">2026-10-01</operation_date>
+    <comment type="string">Поставка материалов по накладной № 15</comment>
+    <supplier type="object">
+      <supplier_id type="integer">1</supplier_id>
+      <name type="string">ООО "стройкомп"</name>
+      <phone type="string">+7 900 111-22-33</phone>
+    </supplier>
+    <department type="null" />
+    <user type="object">
+      <user_id type="integer">1</user_id>
+      <full_name type="string">Иван Иванович Иванов</full_name>
+      <role type="string">Кладовщик</role>
+    </user>
+    <items type="array">
+      <item type="object">
+        <item_id type="integer">1</item_id>
+        <quantity type="number">100.0</quantity>
+        <material type="object">
+          <material_id type="integer">1</material_id>
+          <name type="string">цемент</name>
+          <unit type="string">кг</unit>
+          <min_stock type="number">50.0</min_stock>
+        </material>
+      </item>
+      <item type="object">
+        <item_id type="integer">2</item_id>
+        <quantity type="number">120.0</quantity>
+        <material type="object">
+          <material_id type="integer">2</material_id>
+          <name type="string">кабель</name>
+          <unit type="string">м</unit>
+          <min_stock type="number">30.0</min_stock>
+        </material>
+      </item>
+      <item type="object">
+        <item_id type="integer">3</item_id>
+        <quantity type="number">300.0</quantity>
+        <material type="object">
+          <material_id type="integer">3</material_id>
+          <name type="string">перчатки</name>
+          <unit type="string">шт</unit>
+          <min_stock type="number">100.0</min_stock>
+        </material>
+      </item>
+    </items>
+  </item>
+  <item type="object">
+    <operation_id type="integer">2</operation_id>
+    <operation_type type="string">IN</operation_type>
+    <operation_date type="string">2026-10-03</operation_date>
+    <comment type="string">Дополнительная поставка кабеля и перчаток</comment>
+    <supplier type="object">
+      <supplier_id type="integer">2</supplier_id>
+      <name type="string">ООО "стройкомп2.0"</name>
+      <phone type="string">+7 900 444-55-66</phone>
+    </supplier>
+    <department type="null" />
+    <user type="object">
+      <user_id type="integer">1</user_id>
+      <full_name type="string">Иван Иванович Иванов</full_name>
+      <role type="string">Кладовщик</role>
+    </user>
+    <items type="array">
+      <item type="object">
+        <item_id type="integer">4</item_id>
+        <quantity type="number">50.0</quantity>
+        <material type="object">
+          <material_id type="integer">2</material_id>
+          <name type="string">кабель</name>
+          <unit type="string">м</unit>
+          <min_stock type="number">30.0</min_stock>
+        </material>
+      </item>
+      <item type="object">
+        <item_id type="integer">5</item_id>
+        <quantity type="number">250.0</quantity>
+        <material type="object">
+          <material_id type="integer">3</material_id>
+          <name type="string">перчатки</name>
+          <unit type="string">шт</unit>
+          <min_stock type="number">100.0</min_stock>
+        </material>
+      </item>
+    </items>
+  </item>
+  <item type="object">
+    <operation_id type="integer">3</operation_id>
+    <operation_type type="string">OUT</operation_type>
+    <operation_date type="string">2026-10-05</operation_date>
+    <comment type="string">Выдача материалов ремонтному цеху</comment>
+    <supplier type="null" />
+    <department type="object">
+      <department_id type="integer">1</department_id>
+      <name type="string">Ремонтный цех</name>
+    </department>
+    <user type="object">
+      <user_id type="integer">1</user_id>
+      <full_name type="string">Иван Иванович Иванов</full_name>
+      <role type="string">Кладовщик</role>
+    </user>
+    <items type="array">
+      <item type="object">
+        <item_id type="integer">6</item_id>
+        <quantity type="number">25.0</quantity>
+        <material type="object">
+          <material_id type="integer">1</material_id>
+          <name type="string">цемент</name>
+          <unit type="string">кг</unit>
+          <min_stock type="number">50.0</min_stock>
+        </material>
+      </item>
+      <item type="object">
+        <item_id type="integer">7</item_id>
+        <quantity type="number">40.0</quantity>
+        <material type="object">
+          <material_id type="integer">2</material_id>
+          <name type="string">кабель</name>
+          <unit type="string">м</unit>
+          <min_stock type="number">30.0</min_stock>
+        </material>
+      </item>
+      <item type="object">
+        <item_id type="integer">8</item_id>
+        <quantity type="number">100.0</quantity>
+        <material type="object">
+          <material_id type="integer">3</material_id>
+          <name type="string">перчатки</name>
+          <unit type="string">шт</unit>
+          <min_stock type="number">100.0</min_stock>
+        </material>
+      </item>
+    </items>
+  </item>
+  <item type="object">
+    <operation_id type="integer">4</operation_id>
+    <operation_type type="string">OUT</operation_type>
+    <operation_date type="string">2026-10-06</operation_date>
+    <comment type="string">Выдача материалов производственному участку</comment>
+    <supplier type="null" />
+    <department type="object">
+      <department_id type="integer">2</department_id>
+      <name type="string">Производственный участок</name>
+    </department>
+    <user type="object">
+      <user_id type="integer">1</user_id>
+      <full_name type="string">Иван Иванович Иванов</full_name>
+      <role type="string">Кладовщик</role>
+    </user>
+    <items type="array">
+      <item type="object">
+        <item_id type="integer">9</item_id>
+        <quantity type="number">10.0</quantity>
+        <material type="object">
+          <material_id type="integer">1</material_id>
+          <name type="string">цемент</name>
+          <unit type="string">кг</unit>
+          <min_stock type="number">50.0</min_stock>
+        </material>
+      </item>
+      <item type="object">
+        <item_id type="integer">10</item_id>
+        <quantity type="number">20.0</quantity>
+        <material type="object">
+          <material_id type="integer">2</material_id>
+          <name type="string">кабель</name>
+          <unit type="string">м</unit>
+          <min_stock type="number">30.0</min_stock>
+        </material>
+      </item>
+      <item type="object">
+        <item_id type="integer">11</item_id>
+        <quantity type="number">50.0</quantity>
+        <material type="object">
+          <material_id type="integer">3</material_id>
+          <name type="string">перчатки</name>
+          <unit type="string">шт</unit>
+          <min_stock type="number">100.0</min_stock>
+        </material>
+      </item>
+    </items>
+  </item>
+</data>
